@@ -11,7 +11,25 @@ class MyApp extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
-      home: ProductListScreen(),
+      home: Home(),
+    );
+  }
+}
+
+class Home extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(title: Text("Trang chu")),
+      body: Center(
+          child: ElevatedButton(
+              onPressed: () {
+                Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ProductListScreen()));
+              },
+              child: Text("Nhấn"))),
     );
   }
 }
@@ -49,7 +67,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   Future<void> fetchdata() async {
     try {
       final response =
-          await http.get(Uri.parse('http://192.168.205.221:8181/i.php'));
+          await http.get(Uri.parse('http://192.168.79.221:8181/i.php'));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data =
