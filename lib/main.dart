@@ -29,7 +29,7 @@ class Home extends StatelessWidget {
                     MaterialPageRoute(
                         builder: (context) => ProductListScreen()));
               },
-              child: Text("Nhấn"))),
+              child: Text("Go to ProductScreen"))),
     );
   }
 }
@@ -67,7 +67,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   Future<void> fetchdata() async {
     try {
       final response =
-          await http.get(Uri.parse('http://192.168.79.221:8181/i.php'));
+          await http.get(Uri.parse('http://192.168.115.221:8181/i.php'));
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data =
@@ -78,7 +78,6 @@ class _ProductListScreenState extends State<ProductListScreen> {
       }
     } catch (e) {
       print('Error fetching data: $e');
-      // Handle error, show an error message, etc.
     }
   }
 
@@ -102,7 +101,7 @@ class _ProductListScreenState extends State<ProductListScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(),
+        appBar: AppBar(title: Text("Danh sach san pham")),
         body: FutureBuilder(
             future: fetchdata(),
             builder: (context, index) {
@@ -125,9 +124,76 @@ class _ProductListScreenState extends State<ProductListScreen> {
                       height: 50,
                       fit: BoxFit.fill,
                     ),
+                    onTap: () {
+                      Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                              builder: (context) =>
+                                  ProductDetailScreeen(products![index])));
+                    },
                   );
                 },
               );
             }));
+  }
+}
+
+class ProductDetailScreeen extends StatelessWidget {
+  final Product product;
+  ProductDetailScreeen(this.product);
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Product Detail"),
+        actions: [
+          ElevatedButton(
+              onPressed: () {
+                Navigator.push(context,
+                    MaterialPageRoute(builder: (context) => CartScreen()));
+              },
+              child: Icon(Icons.shopping_cart),
+              style: ElevatedButton.styleFrom(
+                  shape: CircleBorder(), padding: EdgeInsets.all(0)))
+        ],
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text("Name:${product.brands_filter_facet}"),
+          ),
+          Image.network(product.search_image),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text("Info ${product.product_additional_info}",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold)),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text("ID:${product.styleid}"),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8),
+            child: Text("Price:${product.price}"),
+          )
+        ],
+      ),
+    );
+  }
+}
+
+class CartScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext contetx) {
+    return Scaffold(
+      appBar: AppBar(
+        title: Text("Shopping Cart"),
+      ),
+      body: Center(
+        child: Text("Giỏ hàng của bạn"),
+      ),
+    );
   }
 }
